@@ -1,0 +1,623 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Eid Mubarak · Sana Ur Rahman</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Great+Vibes&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome (for eye icon + extra blue icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- canvas-confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: #0b1a2f;  /* deeper blue base */
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .login-screen {
+      background: radial-gradient(circle at 20% 30%, #1e4a6a, #0a1a2a); /* blue gradient */
+      z-index: 10;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .eid-screen {
+      background: linear-gradient(145deg, #0a1f30 0%, #1a2f45 80%); /* blue-toned */
+      z-index: 5;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .eid-screen.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .login-screen.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* floating elements – Unicode + blue icons adjustment */
+    .floating-elements {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+      color: #aad0ff;  /* soft blue */
+      font-size: 2.5rem;
+      text-shadow: 0 0 15px #4a90e2, 0 0 30px #0077be;
+    }
+
+    .floating-elements span {
+      position: absolute;
+      opacity: 0.5;
+      animation: float 8s infinite ease-in-out;
+    }
+
+    /* new blue-inspired floating elements */
+    .floating-elements span:nth-child(1) { top: 10%; left: 5%; animation-duration: 12s; content: "🌙"; }
+    .floating-elements span:nth-child(2) { top: 70%; left: 85%; animation-duration: 14s; content: "⭐"; }
+    .floating-elements span:nth-child(3) { top: 20%; left: 80%; animation-duration: 10s; content: "✨"; }
+    .floating-elements span:nth-child(4) { top: 80%; left: 15%; animation-duration: 16s; content: "💫"; }
+    .floating-elements span:nth-child(5) { top: 40%; left: 45%; animation-duration: 11s; opacity: 0.7; content: "🕌"; }
+    .floating-elements span:nth-child(6) { top: 55%; left: 20%; animation-duration: 13s; content: "☪️"; }
+    .floating-elements span:nth-child(7) { top: 15%; left: 60%; animation-duration: 15s; content: "🌟"; }
+    .floating-elements span:nth-child(8) { top: 88%; left: 72%; animation-duration: 9s; content: "💙"; }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      background-image: radial-gradient(circle at 20% 30%, #6ab0ff 1px, transparent 1px),
+                        radial-gradient(circle at 80% 70%, #3a7bb5 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: twinkle 4s infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.2; }
+      100% { opacity: 0.7; }
+    }
+
+    /* login card - blue theme */
+    .login-card {
+      background: rgba(10, 30, 50, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(64, 164, 255, 0.5);
+      border-radius: 40px;
+      padding: 2.2rem 2rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px rgba(0, 160, 255, 0.3) inset, 0 0 30px #0077ff;
+      text-align: center;
+      z-index: 20;
+      animation: glowPulseBlue 3s infinite alternate;
+    }
+
+    @keyframes glowPulseBlue {
+      0% { box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px rgba(0,160,255,0.2) inset, 0 0 30px #0077ff; }
+      100% { box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 4px rgba(100, 200, 255, 0.5) inset, 0 0 60px #3a8cff; }
+    }
+
+    .bow-icon {
+      font-size: 4rem;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 15px #7ac8ff);
+      animation: gentleWave 2s infinite;
+      color: #ffd966;  /* keep gold for contrast */
+    }
+
+    @keyframes gentleWave {
+      0%,100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    .login-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      color: #b8e2ff;  /* light blue */
+      font-size: 2rem;
+      text-shadow: 0 0 15px #2a7fff;
+      margin-bottom: 1.5rem;
+      letter-spacing: 2px;
+    }
+
+    /* password field container */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+      margin: 0.7rem 0;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem 3rem 1rem 1.5rem;
+      background: rgba(5, 15, 30, 0.8);
+      border: 1.5px solid rgba(0, 162, 255, 0.6);
+      border-radius: 50px;
+      color: white;
+      outline: none;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+    }
+
+    .input-field:focus {
+      border-color: #4aa5ff;
+      box-shadow: 0 0 25px #0077ff;
+      background: rgba(0,20,40,0.9);
+    }
+
+    .input-field::placeholder {
+      color: #aad0ff;
+      font-weight: 300;
+      font-size: 1.1rem;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #7ac8ff;
+      cursor: pointer;
+      font-size: 1.4rem;
+      transition: 0.2s;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-password:hover {
+      color: #b8e2ff;
+      text-shadow: 0 0 10px #0099ff;
+    }
+
+    .enter-btn {
+      background: linear-gradient(145deg, #2a7fff, #0055aa);
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.4rem;
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      width: 100%;
+      margin-top: 1.2rem;
+      cursor: pointer;
+      letter-spacing: 2px;
+      box-shadow: 0 10px 20px #003377, 0 0 30px #0077ff;
+      transition: 0.2s;
+      font-family: 'Cinzel', serif;
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 30px #004499, 0 0 45px #6ab0ff;
+    }
+
+    .error-message {
+      background: rgba(180, 40, 40, 0.7);
+      backdrop-filter: blur(8px);
+      color: #ffd7b0;
+      padding: 0.8rem;
+      border-radius: 40px;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ff8080;
+      display: none;
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+
+    /* Eid main screen - blue theme */
+    .eid-content {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+    }
+
+    .message-box {
+      background: rgba(10, 35, 60, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 2px solid rgba(100, 200, 255, 0.5);
+      border-radius: 50px;
+      padding: 2rem 1.8rem;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 40px 70px rgba(0,0,0,0.8), 0 0 0 3px rgba(0, 191, 255, 0.3) inset, 0 0 100px #3a8cff;
+      text-align: center;
+      animation: borderGlowBlue 3s infinite alternate;
+    }
+
+    @keyframes borderGlowBlue {
+      0% { border-color: rgba(0, 162, 255, 0.5); box-shadow: 0 40px 70px rgba(0,0,0,0.8), 0 0 0 3px rgba(0, 162, 255, 0.3) inset, 0 0 60px #0077ff; }
+      100% { border-color: rgba(100, 200, 255, 0.9); box-shadow: 0 40px 80px rgba(0,0,0,0.9), 0 0 0 5px rgba(100, 200, 255, 0.6) inset, 0 0 120px #6ab0ff; }
+    }
+
+    .eid-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #b8e2ff, #6ab0ff, #2a7fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px #0077ff, 0 0 40px rgba(0,119,255,0.5);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      letter-spacing: 4px;
+    }
+
+    .greeting-message {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      color: #e6f3ff;
+      line-height: 1.7;
+      white-space: pre-line;
+      margin: 1.2rem 0;
+      text-shadow: 0 0 10px rgba(0,160,255,0.3);
+      font-weight: 600;
+    }
+
+    .name-divider {
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #6ab0ff, #b8e2ff, #6ab0ff, transparent);
+      box-shadow: 0 0 12px #0077ff, 0 0 20px #3a8cff;
+      margin: 20px auto 15px auto;
+      border-radius: 2px;
+    }
+
+    .sender-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.2rem;
+      background: linear-gradient(145deg, #b8e2ff, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      margin-top: 5px;
+      padding: 8px 0;
+      line-height: 1.6;
+      filter: drop-shadow(0 0 15px #3a8cff);
+      font-weight: 400;
+    }
+
+    .celebrate-btn {
+      background: linear-gradient(135deg, #0055aa, #2a7fff, #0055aa);
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: bold;
+      padding: 0.8rem 2.2rem;
+      border-radius: 50px;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 0 30px #3a8cff, 0 10px 20px #003377;
+      transition: 0.3s;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      animation: gentlePulse 2s infinite ease-in-out;
+    }
+
+    .celebrate-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 60px #6ab0ff, 0 15px 30px #004499;
+    }
+
+    @keyframes gentlePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    /* Success Popup - blue theme */
+    .success-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      background: linear-gradient(145deg, #2a7fff, #0055aa);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 60px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      box-shadow: 0 0 30px #0077ff, 0 5px 15px rgba(0,0,0,0.5);
+      border: 2px solid #b8e2ff;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 2px;
+    }
+    .success-popup.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* extra blue icons inside message box */
+    .blue-icon-star, .blue-icon-moon {
+      display: inline-block;
+      margin: 0 5px;
+      color: #6ab0ff;
+      filter: drop-shadow(0 0 8px #0077ff);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (min-width: 1024px) and (max-width: 1440px) {
+      .login-card { max-width: 380px; padding: 2rem 1.8rem; }
+      .message-box { max-width: 600px; padding: 1.8rem 1.6rem; }
+      .eid-title { font-size: 3.2rem; }
+      .greeting-message { font-size: 1.5rem; }
+      .sender-name { font-size: 2.8rem; }
+      .celebrate-btn { font-size: 1.4rem; padding: 0.7rem 2rem; }
+    }
+
+    @media (max-width: 600px) {
+      .login-card { padding: 1.5rem 1rem; max-width: 320px; }
+      .bow-icon { font-size: 3rem; margin-bottom: 0.2rem; }
+      .login-title { font-size: 1.6rem; margin-bottom: 1rem; }
+      .input-field { padding: 0.8rem 3rem 0.8rem 1.2rem; font-size: 1.1rem; }
+      .input-field::placeholder { font-size: 1rem; }
+      .toggle-password { font-size: 1.2rem; right: 12px; }
+      .enter-btn { font-size: 1.2rem; padding: 0.7rem 1.5rem; margin-top: 1rem; }
+      .error-message { font-size: 0.9rem; padding: 0.6rem; }
+
+      .message-box { padding: 1.2rem 1rem; border-radius: 30px; }
+      .eid-title { font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+      .greeting-message { font-size: 1.3rem; line-height: 1.5; margin: 0.8rem 0; }
+      .name-divider { width: 70px; margin: 12px auto 10px auto; }
+      .sender-name { font-size: 2.2rem; padding: 6px 0; line-height: 1.5; }
+      .celebrate-btn { font-size: 1.3rem; padding: 0.6rem 1.5rem; margin-top: 1rem; }
+
+      .floating-elements span:nth-child(3),
+      .floating-elements span:nth-child(6),
+      .floating-elements span:nth-child(8) { display: none; }
+
+      .success-popup { font-size: 1.2rem; padding: 12px 25px; top: 15px; }
+    }
+
+    @media (max-width: 380px) {
+      .login-card { padding: 1.2rem 0.8rem; }
+      .bow-icon { font-size: 2.5rem; }
+      .login-title { font-size: 1.4rem; }
+      .input-field { padding: 0.6rem 2.8rem 0.6rem 1rem; font-size: 1rem; }
+      .toggle-password { font-size: 1rem; right: 10px; }
+      .enter-btn { font-size: 1.1rem; padding: 0.6rem 1rem; }
+
+      .eid-title { font-size: 2rem; }
+      .greeting-message { font-size: 1.1rem; }
+      .sender-name { font-size: 1.8rem; padding: 4px 0; }
+      .celebrate-btn { font-size: 1.1rem; padding: 0.5rem 1.2rem; }
+
+      .floating-elements span:nth-child(2),
+      .floating-elements span:nth-child(5),
+      .floating-elements span:nth-child(7) { display: none; }
+
+      .success-popup { font-size: 1rem; padding: 8px 20px; top: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="floating-elements">
+    <span>🌙</span>
+    <span>⭐</span>
+    <span>✨</span>
+    <span>💫</span>
+    <span>🕌</span>
+    <span>☪️</span>
+    <span>🌟</span>
+    <span>💙</span>
+    </div>
+  <div class="particles"></div>
+
+  <!-- LOGIN SCREEN -->
+  <div class="screen login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="bow-icon">🎀</div>
+      <h2 class="login-title">EID WELCOME</h2>
+      <!-- Password field with eye toggle -->
+      <div class="password-wrapper">
+        <input type="password" class="input-field" id="passwordInput" placeholder="Password (Sana...)" value="">
+        <button class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+          <i class="far fa-eye"></i>
+        </button>
+      </div>
+      <button class="enter-btn" id="enterBtn">ENTER</button>
+      <div class="error-message" id="errorMsg">Wrong password! Please try again.</div>
+    </div>
+  </div>
+
+  <!-- EID SCREEN -->
+  <div class="screen eid-screen" id="eidScreen">
+    <div class="eid-content">
+      <div class="message-box">
+        <div class="eid-title"><i class="fas fa-star blue-icon-star"></i> EID MUBARAK <i class="fas fa-moon blue-icon-moon"></i></div>
+        <div class="greeting-message">
+          <i class="fas fa-star" style="color:#6ab0ff; font-size:1.2rem;"></i> Aap ko aur aapke ghar walon ko<br>
+          Eid ki bohat bohat mubarak ho.<br><br>
+          Allah aapki har dua qabool kare<br>
+          aur aapki zindagi khushiyon se bhar de.
+        </div>
+        <!-- Elegant divider above name -->
+        <div class="name-divider"></div>
+        <div class="greeting-message" style="margin-top: 0;">
+          💙 <span class="sender-name">Sana Ur Rahman</span> <i class="fas fa-heart" style="color:#6ab0ff; font-size:1.8rem;"></i>
+        </div>
+        <button class="celebrate-btn" id="celebrateBtn"><i class="fas fa-star"></i> CELEBRATE <i class="fas fa-moon"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS POPUP -->
+  <div class="success-popup" id="successPopup">✔ Access Granted</div>
+
+  <script>
+    (function() {
+      const loginScreen = document.getElementById('loginScreen');
+      const eidScreen = document.getElementById('eidScreen');
+      const passwordInput = document.getElementById('passwordInput');
+      const enterBtn = document.getElementById('enterBtn');
+      const errorMsg = document.getElementById('errorMsg');
+      const celebrateBtn = document.getElementById('celebrateBtn');
+      const successPopup = document.getElementById('successPopup');
+      const togglePassword = document.getElementById('togglePassword');
+
+      const CORRECT_PASSWORD = 'Sana...';
+      let isProcessing = false;
+
+      // ===== TELEGRAM NOTIFICATION FUNCTION =====
+      async function sendTelegramNotification(celebrateClicked = false) {
+        const BOT_TOKEN = '8651103833:AAEJPNgi5kUKJEVy8uwiXfg0CzAiYGNIGTM';
+        const CHAT_ID = '8119313650';
+        
+        const message = `🔔 *EID PAGE VISITED* (Blue Theme)
+🔑 *Password:* Sana...
+🎉 *Celebrate clicked:* ${celebrateClicked ? 'Yes ✅' : 'No ❌'}
+⏰ *Time:* ${new Date().toLocaleString()}
+📱 *Device:* ${navigator.userAgent}`;
+        
+        try {
+          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: message,
+              parse_mode: 'Markdown'
+            })
+          });
+          console.log('Telegram notification sent');
+        } catch (error) {
+          console.log('Telegram notification failed:', error);
+        }
+      }
+
+      // Toggle password visibility
+      togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+      });
+
+      function showEidScreen() {
+        loginScreen.classList.add('hide');
+        eidScreen.classList.add('show');
+      }
+
+      function showError() {
+        errorMsg.style.display = 'block';
+        if (navigator.vibrate) navigator.vibrate(200);
+        setTimeout(() => {
+          errorMsg.style.display = 'none';
+        }, 2000);
+      }
+
+      function attemptLogin() {
+        if (isProcessing) return;
+        const pwd = passwordInput.value;
+        if (pwd === CORRECT_PASSWORD) {
+          isProcessing = true;
+          enterBtn.disabled = true;
+
+          // Send Telegram notification (celebrate not clicked yet)
+          sendTelegramNotification(false);
+
+          successPopup.classList.add('show');
+
+          setTimeout(() => {
+            showEidScreen();
+          }, 1500);
+
+          setTimeout(() => {
+            successPopup.classList.remove('show');
+          }, 2000);
+        } else {
+          showError();
+        }
+      }
+
+      enterBtn.addEventListener('click', attemptLogin);
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') attemptLogin();
+      });
+
+      celebrateBtn.addEventListener('click', () => {
+        // Send Telegram notification that celebrate button was clicked
+        sendTelegramNotification(true);
+        
+        confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 }, colors: ['#2a7fff', '#6ab0ff', '#b8e2ff'] });
+        setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.5, x: 0.2 }, colors: ['#2a7fff', '#6ab0ff', '#b8e2ff'] }), 150);
+        setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.5, x: 0.8 }, colors: ['#2a7fff', '#6ab0ff', '#b8e2ff'] }), 300);
+      });
+
+      passwordInput.focus();
+    })();
+  </script>
+</body>
+</html>
+```
